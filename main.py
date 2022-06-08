@@ -1,96 +1,33 @@
 #! /usr/bin/env python3
-import requests
-import os 
-import json
+'''
+Using this tutorial
+https://www.youtube.com/watch?v=0EekpQBEP_8
+'''
 
-# to set your environment variables in your terminal run the following line:
+import tweepy
+import os
+from datetime import datetime
+
 # export 'BEARER_TOKEN'='<your_bearer_token>'
 bearer_token = os.environ.get("BEARER_TOKEN")
 
+client = tweepy.Client(bearer_token)
+#I can create a regex with vim or sed to replace this variable just once and rerun it.
+tag = "heatnation"
 
-def bearer_oauth(r):
-    """
-    Method required by bearer token authentication
-    """
-
-    r.headers["Authorization"] = f"Bearer {bearer_token}"
-    r.headers["User-Agent"] = "v2FilteredStreamPython"
-    return r
-
-
-def get_rules():
-    response = requests.get(
-        "https://api.twitter.com/2/tweets/search/stream/rules", auth=bearer_oauth   
-    )
-    if response.status_code != 200:
-        raise Exception(
-            "Cannot get rules (HTTP {}): {}".format(response.status_code, response.text)
-        )
-    print(json.dumps(response.json()))
-    return response.json()
-
-
-def delete_all_rules(rules):
-    if rules is None or "data" not in rules:
-        return None
-
-    ids = list(map(lambda rule: rule["id"], rules["data"]))
-    payload = {"delete": {"ids": ids}}
-    response = requests.post(
-        "https://api.twitter.com/2/tweets/search/stream/rules",
-        auth=bearer_oauth,
-        json=payload
-    )
-    if response.status_code != 200:
-        raise Exception(
-            "Cannot delete rules (HTTP {}): {}".format(
-                response.status_code, response.text
-            )
-        )
-    print(json.dumps(response.json()))
-
-
-def set_rules(delete):
-    #You can adjust the rules if needed
-    sample_rules = [
-        {"value": "dog has:images", "tag": "dog pictures"},
-        {"value": "cat has:images -grumpy", "tag": "cat pictures"},
-    ]
-    payload = {"add": sample_rules}
-    response = requests.post(
-        "https://api.twitter.com/2/tweets/search/stream/rules",
-        auth=bearer_oauth,
-        json=payload,
-    )
-    if response.status_code != 201:
-        raise Exception(
-            "Cannot add rules (HTTP {}: {}".format(response.status_code, response.text)
-        )
-    print(json.dumps(response.json()))
-
-
-def get_stream(set):
-    response = requests.get(
-        "https://api.twitter.com/2/tweets/search/stream", auth=bearer_oauth, stream=True,
-    )
-    print(response.status_code)
-    if response.status_code != 200:
-        raise Exception(
-            "Cannot get stream (HTTP {}): {}".format(response.status_code, response.text)
-            )
-    for response_line in response.iter_lines():
-        if response_line:
-            json_response = json.loads(response_line)
-            print(json.dumps(json_response, indent=4, sort_keys=True))
-
+def search_tweets(tag):
+    query = "#{} -is:retweet".format(tag)
+    file_name ='tweets.txt'
+    file_timestamp = datetime.now().strftime('%Y%m%d')
+    tweet_file = file_timestamp + file_name
+    with open(tweet_file, 'a+') as filehandler:
+        for tweet in tweepy.Paginator(client.search_recent_tweets, query=query).flatten():
+            #print(tweet.text + '\n')
+            filehandler.write('%s\n' % tweet.text)
+        
 
 def main():
-    rules = get_rules()
-    delete = delete_all_rules(rules)
-    set = set_rules(delete)
-    get_stream(set)
+    search_tweets(tag)
 
-
-if __name__ == "__main__":
+if __name__ == '__main__':
     main()
-
