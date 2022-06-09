@@ -31,6 +31,12 @@ def send_to_s3():
     with open(tweet_file, "rb") as f:
         s3.upload_fileobj(f, "weekly-tweets-digest", tweet_file)
 
+def parameter_store():
+    ssm = boto3.client('ssm')
+    response = ssm.get_parameter(Name='twitter-bearer-token', WithDecryption=False)
+    bearer_token_1 = response['Parameter']['Value']
+    return bearer_token_1
+
 def main():
     search_tweets(tag)
     send_to_s3()
