@@ -15,9 +15,9 @@ I can create a regex with vim or sed to replace this variable just once and reru
 Global Variables:
 '''
 tag = "heatnation"
-file_name ='tweets.txt'
+#file_name ='tweets.txt'
 file_timestamp = datetime.now().strftime('%Y%m%d')
-tweet_file = file_timestamp + file_name
+tweet_file = file_timestamp + '-tweets.txt'
 bearer = 'bearer-token-encypt'
 bucket = 'weekly-tweets-digest'
 
