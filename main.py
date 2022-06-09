@@ -10,7 +10,6 @@ from datetime import datetime
 import boto3
 
 '''
-client = tweepy.Client(bearer_token)
 I can create a regex with vim or sed to replace this variable just once and rerun it.
 
 Global Variables:
