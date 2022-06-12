@@ -1,9 +1,9 @@
 #! /usr/bin/env python3
 '''
-Using this tutorial
-https://www.youtube.com/watch?v=0EekpQBEP_8
-key alias daniel-aslan-june-2022
+This is the s3 endpoint
+http://dannys-weekly-tweets.s3-website-us-east-1.amazonaws.com/
 '''
+
 from email.headerregistry import ContentTypeHeader
 import tweepy
 import os
