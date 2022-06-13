@@ -4,15 +4,12 @@ This is the s3 endpoint
 http://dannys-weekly-tweets.s3-website-us-east-1.amazonaws.com/
 '''
 
-from email.headerregistry import ContentTypeHeader
 import tweepy
 import os
 from datetime import datetime
 import boto3
 
 '''
-I can create a regex with vim or sed to replace this variable just once and rerun it.
-
 Global Variables:
 '''
 #Removing the timestamp feature but just commenting it out in case I want it again later
@@ -21,7 +18,9 @@ tweet_file = 'index.html'
 bearer = 'bearer-token-encypt'
 bucket = 'dannys-weekly-tweets'
 
-# Beginning of Functions
+'''
+ Beginning of Functions
+'''
 
 #Get the twitter bearer token as a secret from aws parameter store 
 def parameter_store():
@@ -45,9 +44,7 @@ def search_tweets(tag):
     with open(tweet_file, 'a+') as filehandler:
         filehandler.write('</body>\n </html>\n ')
 
-    
-
-# send the file to Amazon S3, make sure that the bucket is already set up to be a static web page.  
+# This sends the file to Amazon S3, make sure that the bucket is already set up to be a static web page.  
 # Also use the Extra args to make sure that the content type is right otherwise it won't serve right
 def send_to_s3(bucket):
     s3 = boto3.resource('s3')
