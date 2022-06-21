@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+
 '''
 This is the s3 endpoint
 http://dannys-weekly-tweets.s3-website-us-east-1.amazonaws.com/
